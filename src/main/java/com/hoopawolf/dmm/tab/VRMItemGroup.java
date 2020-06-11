@@ -1,8 +1,8 @@
 package com.hoopawolf.dmm.tab;
 
+import com.hoopawolf.dmm.util.ItemBlockRegistryHandler;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,6 +19,6 @@ public class VRMItemGroup extends ItemGroup
     @Override
     public ItemStack createIcon()
     {
-        return new ItemStack(Items.MAGMA_CREAM);
+        return new ItemStack(ItemBlockRegistryHandler.BROKEN_SWORD.get());
     }
 }

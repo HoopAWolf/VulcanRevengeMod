@@ -1,3 +1,13 @@
 {
-  "itemGroup.vrmItemGroup": "Vulcan's Revenge Mod"
+  "itemGroup.vrmItemGroup": "Vulcan's Revenge Mod",
+  "item.vrm.vulcansrevenge1": "Vulcan's Revenge: Fire",
+  "item.vrm.vulcansrevenge2": "Vulcan's Revenge: Frost",
+  "item.vrm.vulcansrevenge3": "Vulcan's Revenge: Heavy",
+  "item.vrm.vulcansrevenge4": "Vulcan's Revenge: Wither",
+  "item.vrm.brokensword": "Broken Sword",
+
+  "tooltip.mwaw:vulcansrevenge1": "Lights enemy on fire",
+  "tooltip.mwaw:vulcansrevenge2": "Freeze enemy in place",
+  "tooltip.mwaw:vulcansrevenge3": "Deals big damage to enemy",
+  "tooltip.mwaw:vulcansrevenge4": "Applies Wither onto enemy"
 }
