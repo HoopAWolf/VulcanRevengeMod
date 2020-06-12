@@ -1,6 +1,7 @@
 package com.hoopawolf.dmm.proxy;
 
 import com.hoopawolf.dmm.util.EntityRegistryHandler;
+import com.hoopawolf.dmm.util.TileEntityRegistryHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -14,5 +15,6 @@ public class ClientProxy
     public static void onClientSetUp(final FMLClientSetupEvent event)
     {
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> EntityRegistryHandler::registerEntityRenderer);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> TileEntityRegistryHandler::registerTileEntityRenderer);
     }
 }

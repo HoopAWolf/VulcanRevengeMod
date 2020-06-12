@@ -26,11 +26,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class VulcanSword extends SwordItem
+public class VulcanSwordItem extends SwordItem
 {
     private int type;
 
-    public VulcanSword(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder)
+    public VulcanSwordItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder)
     {
         super(tier, attackDamageIn, attackSpeedIn, new Item.Properties().group(VRMItemGroup.instance));
 

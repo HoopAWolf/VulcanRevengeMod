@@ -3,10 +3,7 @@ package com.hoopawolf.dmm;
 import com.hoopawolf.dmm.proxy.ClientProxy;
 import com.hoopawolf.dmm.proxy.CommonProxy;
 import com.hoopawolf.dmm.ref.Reference;
-import com.hoopawolf.dmm.util.EntityRegistryHandler;
-import com.hoopawolf.dmm.util.ItemBlockRegistryHandler;
-import com.hoopawolf.dmm.util.ParticleRegistryHandler;
-import com.hoopawolf.dmm.util.PotionRegistryHandler;
+import com.hoopawolf.dmm.util.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +21,7 @@ public class VulcanRevengeMod
 
         ItemBlockRegistryHandler.init(modEventBus);
         EntityRegistryHandler.ENTITIES.register(modEventBus);
+        TileEntityRegistryHandler.TILE_ENTITIES.register(modEventBus);
         ParticleRegistryHandler.PARTICLES.register(modEventBus);
         PotionRegistryHandler.init(modEventBus);
 
