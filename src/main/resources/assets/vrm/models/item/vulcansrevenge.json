@@ -6,19 +6,19 @@
   "overrides": [
     {
       "predicate": {
-        "type": 2
+        "type": 1
       },
       "model": "vrm:item/vulcansrevengefrost"
     },
     {
       "predicate": {
-        "type": 3
+        "type": 2
       },
       "model": "vrm:item/vulcansrevengeheavy"
     },
     {
       "predicate": {
-        "type": 4
+        "type": 3
       },
       "model": "vrm:item/vulcansrevengewither"
     }

@@ -1,6 +1,6 @@
 package com.hoopawolf.dmm.util;
 
-import com.hoopawolf.dmm.blocks.SwordStoneBlock;
+import com.hoopawolf.dmm.blocks.*;
 import com.hoopawolf.dmm.items.weapons.BrokenSwordItem;
 import com.hoopawolf.dmm.items.weapons.VulcanSwordItem;
 import com.hoopawolf.dmm.ref.Reference;
@@ -22,13 +22,25 @@ public class ItemBlockRegistryHandler
     public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 
     //BLOCKS
-    public static final RegistryObject<Block> SWORD_STONE_BLOCK = BLOCKS.register("swordstone", () -> new SwordStoneBlock(Block.Properties.create(Material.ANVIL)));
+    public static final RegistryObject<Block> SWORD_STONE_BLOCK = BLOCKS.register("swordstone", () -> new SwordStoneBlock(Block.Properties.create(Material.ANVIL).hardnessAndResistance(100)));
+    public static final RegistryObject<Block> BLAZE_RUNE_BLOCK = BLOCKS.register("blazerune", () -> new BlazeRuneBlock(Block.Properties.create(Material.ANVIL).hardnessAndResistance(100)));
+    public static final RegistryObject<Block> NETHER_RUNE_BLOCK = BLOCKS.register("netherrune", () -> new NetherRuneBlock(Block.Properties.create(Material.ANVIL).hardnessAndResistance(100)));
+    public static final RegistryObject<Block> SCUTE_RUNE_BLOCK = BLOCKS.register("scuterune", () -> new ScuteRuneBlock(Block.Properties.create(Material.ANVIL).hardnessAndResistance(100)));
+    public static final RegistryObject<Block> MAGMA_RUNE_BLOCK = BLOCKS.register("magmarune", () -> new MagmaRuneBlock(Block.Properties.create(Material.ANVIL).hardnessAndResistance(100)));
 
     //ITEMS
     public static final RegistryObject<Item> VULCAN_SWORD = ITEMS.register("vulcansrevenge", () -> new VulcanSwordItem(ItemTier.DIAMOND, 3, -2.5f, new Item.Properties().maxDamage(500)));
     public static final RegistryObject<Item> BROKEN_SWORD = ITEMS.register("brokensword", () -> new BrokenSwordItem(new Item.Properties().maxStackSize(1)));
     public static final RegistryObject<BlockItem> SWORD_STONE = ITEMS.register("swordstone",
             () -> new BlockItem(SWORD_STONE_BLOCK.get(), new Item.Properties().group(VRMItemGroup.instance)));
+    public static final RegistryObject<BlockItem> BLAZE_RUNE = ITEMS.register("blazerune",
+            () -> new BlockItem(BLAZE_RUNE_BLOCK.get(), new Item.Properties().group(VRMItemGroup.instance)));
+    public static final RegistryObject<BlockItem> NETHER_RUNE = ITEMS.register("netherrune",
+            () -> new BlockItem(NETHER_RUNE_BLOCK.get(), new Item.Properties().group(VRMItemGroup.instance)));
+    public static final RegistryObject<BlockItem> SCUTE_RUNE = ITEMS.register("scuterune",
+            () -> new BlockItem(SCUTE_RUNE_BLOCK.get(), new Item.Properties().group(VRMItemGroup.instance)));
+    public static final RegistryObject<BlockItem> MAGMA_RUNE = ITEMS.register("magmarune",
+            () -> new BlockItem(MAGMA_RUNE_BLOCK.get(), new Item.Properties().group(VRMItemGroup.instance)));
 
 
     public static void init(IEventBus _iEventBus)

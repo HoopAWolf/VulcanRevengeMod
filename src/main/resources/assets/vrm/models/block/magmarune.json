@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_top",
+  "textures": {
+    "top": "vrm:blocks/toprune",
+    "side": "vrm:blocks/magmarune",
+    "bottom": "vrm:blocks/toprune"
+  }
+}

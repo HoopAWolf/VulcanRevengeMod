@@ -1,13 +1,20 @@
 {
   "itemGroup.vrmItemGroup": "Vulcan's Revenge Mod",
-  "item.vrm.vulcansrevenge1": "Vulcan's Revenge: Fire",
-  "item.vrm.vulcansrevenge2": "Vulcan's Revenge: Frost",
-  "item.vrm.vulcansrevenge3": "Vulcan's Revenge: Heavy",
-  "item.vrm.vulcansrevenge4": "Vulcan's Revenge: Wither",
+  "item.vrm.vulcansrevenge0": "Vulcan's Revenge: Fire",
+  "item.vrm.vulcansrevenge1": "Vulcan's Revenge: Frost",
+  "item.vrm.vulcansrevenge2": "Vulcan's Revenge: Heavy",
+  "item.vrm.vulcansrevenge3": "Vulcan's Revenge: Wither",
   "item.vrm.brokensword": "Broken Sword",
 
-  "tooltip.mwaw:vulcansrevenge1": "Lights enemy on fire",
-  "tooltip.mwaw:vulcansrevenge2": "Freeze enemy in place",
-  "tooltip.mwaw:vulcansrevenge3": "Deals big damage to enemy",
-  "tooltip.mwaw:vulcansrevenge4": "Applies Wither onto enemy"
+  "block.vrm.swordstone": "Sword Stone",
+  "block.vrm.blazerune": "Activation Rune [Blaze Powder]",
+  "block.vrm.netherrune": "Activation Rune [Nether Brick]",
+  "block.vrm.scuterune": "Activation Rune [Scute]",
+  "block.vrm.magmarune": "Activation Rune [Magma Cream]",
+
+  "tooltip.mwaw:vulcansrevenge0": "Lights enemy on fire",
+  "tooltip.mwaw:vulcansrevenge1": "Freeze enemy in place",
+  "tooltip.mwaw:vulcansrevenge2": "Deals big damage to enemy",
+  "tooltip.mwaw:vulcansrevenge3": "Applies Wither onto enemy",
+  "tooltip.mwaw:vulcansrevengeinfo": "[Right click to change Stance]"
 }

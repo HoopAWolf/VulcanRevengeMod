@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.potion.EffectInstance;
@@ -28,15 +27,27 @@ import java.util.List;
 
 public class VulcanSwordItem extends SwordItem
 {
-    private int type;
 
     public VulcanSwordItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder)
     {
-        super(tier, attackDamageIn, attackSpeedIn, new Item.Properties().group(VRMItemGroup.instance));
+        super(tier, attackDamageIn, attackSpeedIn, builder.group(VRMItemGroup.instance));
 
-        type = 1;
+        this.addPropertyOverride(new ResourceLocation("type"), (p_210310_0_, p_210310_1_, p_210310_2_) -> getType(p_210310_0_));
+    }
 
-        this.addPropertyOverride(new ResourceLocation("type"), (p_210310_0_, p_210310_1_, p_210310_2_) -> getType());
+    public static int getType(ItemStack stack)
+    {
+        if (!stack.hasTag())
+            stack.getOrCreateTag().putInt("type", 0);
+
+        int tag = stack.getTag().getInt("type");
+
+        return tag;
+    }
+
+    private static void setType(ItemStack stack, int type)
+    {
+        stack.getOrCreateTag().putInt("type", type);
     }
 
     @Override
@@ -44,10 +55,12 @@ public class VulcanSwordItem extends SwordItem
     {
         if (!worldIn.isRemote)
         {
-            ++type;
+            ItemStack itemStack = playerIn.getHeldItemMainhand();
 
-            if (getType() > 4)
-                type = 1;
+            setType(itemStack, getType(itemStack) + 1);
+
+            if (getType(itemStack) > 3)
+                setType(itemStack, 0);
 
             return ActionResult.resultPass(playerIn.getHeldItem(handIn));
         }
@@ -60,22 +73,22 @@ public class VulcanSwordItem extends SwordItem
     {
         super.hitEntity(stack, target, attacker);
 
-        switch (getType())
+        switch (getType(stack))
         {
-            case 1:
+            case 0:
                 target.setFire(10);
                 break;
-            case 2:
+            case 1:
                 target.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 140, 10));
                 stack.damageItem(2, target, (p_220009_1_) -> p_220009_1_.sendBreakAnimation(target.getActiveHand()));
                 break;
 
-            case 3:
+            case 2:
                 target.addPotionEffect(new EffectInstance(Effects.INSTANT_DAMAGE, 1, 40));
                 stack.damageItem(5, target, (p_220009_1_) -> p_220009_1_.sendBreakAnimation(target.getActiveHand()));
                 break;
 
-            case 4:
+            case 3:
                 target.addPotionEffect(new EffectInstance(Effects.WITHER, 140, 10));
                 stack.damageItem(2, target, (p_220009_1_) -> p_220009_1_.sendBreakAnimation(target.getActiveHand()));
                 break;
@@ -84,17 +97,12 @@ public class VulcanSwordItem extends SwordItem
         return true;
     }
 
-    private int getType()
-    {
-        return type;
-    }
-
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
     {
         if (!worldIn.isRemote)
         {
-            if (isSelected && getType() == 3)
+            if (isSelected && getType(stack) == 2)
             {
                 if (entityIn instanceof LivingEntity)
                 {
@@ -107,13 +115,14 @@ public class VulcanSwordItem extends SwordItem
     @Override
     public ITextComponent getDisplayName(ItemStack stack)
     {
-        return new TranslationTextComponent(this.getTranslationKey(stack) + getType());
+        return new TranslationTextComponent(this.getTranslationKey(stack) + getType(stack));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:vulcansrevenge") + getType()).setStyle(new Style().setItalic(true).setColor(TextFormatting.LIGHT_PURPLE)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:vulcansrevenge") + getType(stack)).setStyle(new Style().setItalic(true).setColor(TextFormatting.LIGHT_PURPLE)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:vulcansrevengeinfo")).setStyle(new Style().setItalic(true).setColor(TextFormatting.DARK_GRAY)));
     }
 }
