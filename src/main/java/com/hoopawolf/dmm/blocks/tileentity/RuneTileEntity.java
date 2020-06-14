@@ -6,6 +6,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.Vec3i;
 
 public abstract class RuneTileEntity extends TileEntity
 {
@@ -76,4 +77,6 @@ public abstract class RuneTileEntity extends TileEntity
     }
 
     public abstract ItemStack getActivationItem();
+
+    public abstract Vec3i getRayColor();
 }
