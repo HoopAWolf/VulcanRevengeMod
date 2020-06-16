@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "vrm:block/blazerune" }
+    "": {
+      "model": "vrm:block/blazerune"
+    }
   }
 }

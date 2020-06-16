@@ -188,9 +188,9 @@ public class SwordStoneTileEntity extends TileEntity implements ITickableTileEnt
                     for (BlockPos pos : runePos)
                     {
                         Vec3d block = new Vec3d(getPos().getX() + pos.getX() + 0.5D, getPos().getY() + pos.getY() + 1.75D, getPos().getZ() + pos.getZ() + 0.5D);
-                        Vec3d dir = new Vec3d(getPos().getX() + 0.5D, getPos().getY() + (timer * 0.001D), getPos().getZ() + 0.5).subtract(new Vec3d(block.getX(), block.getX(), block.getZ())).normalize();
-                        this.world.addParticle(ParticleTypes.FIREWORK, block.getX(), block.getY(), block.getZ(), dir.getX() * 13D, dir.getY() * 0.2D, dir.getZ() * 13D);
-                        this.world.addParticle(ParticleTypes.END_ROD, block.getX(), block.getY(), block.getZ(), dir.getX() * 10D, dir.getY() * 0.2D, dir.getZ() * 10D);
+                        Vec3d dir = new Vec3d(getPos().getX() + 0.5D, getPos().getY(), getPos().getZ() + 0.5).subtract(new Vec3d(block.getX(), block.getY(), block.getZ())).normalize();
+                        this.world.addParticle(ParticleTypes.FIREWORK, block.getX(), block.getY(), block.getZ(), dir.getX(), dir.getY(), dir.getZ());
+                        this.world.addParticle(ParticleTypes.END_ROD, block.getX(), block.getY(), block.getZ(), dir.getX(), dir.getY(), dir.getZ());
                     }
 
                     if (getTimer() > 600)

@@ -40,9 +40,7 @@ public class VulcanSwordItem extends SwordItem
         if (!stack.hasTag())
             stack.getOrCreateTag().putInt("type", 0);
 
-        int tag = stack.getTag().getInt("type");
-
-        return tag;
+        return stack.getTag().getInt("type");
     }
 
     private static void setType(ItemStack stack, int type)
@@ -84,7 +82,6 @@ public class VulcanSwordItem extends SwordItem
                 break;
 
             case 2:
-                target.addPotionEffect(new EffectInstance(Effects.INSTANT_DAMAGE, 1, 40));
                 stack.damageItem(5, target, (p_220009_1_) -> p_220009_1_.sendBreakAnimation(target.getActiveHand()));
                 break;
 
@@ -107,6 +104,7 @@ public class VulcanSwordItem extends SwordItem
                 if (entityIn instanceof LivingEntity)
                 {
                     ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.MINING_FATIGUE, 1, 5));
+                    ((LivingEntity) entityIn).addPotionEffect(new EffectInstance(Effects.STRENGTH, 1, 10));
                 }
             }
         }

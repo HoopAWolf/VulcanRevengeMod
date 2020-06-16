@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "vrm:block/magmarune" }
+    "": {
+      "model": "vrm:block/magmarune"
+    }
   }
 }

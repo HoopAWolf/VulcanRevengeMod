@@ -5,16 +5,20 @@
   "item.vrm.vulcansrevenge2": "Vulcan's Revenge: Heavy",
   "item.vrm.vulcansrevenge3": "Vulcan's Revenge: Wither",
   "item.vrm.brokensword": "Broken Sword",
-
+  "item.vrm.death": "Death Scythe",
   "block.vrm.swordstone": "Sword Stone",
   "block.vrm.blazerune": "Activation Rune [Blaze Powder]",
   "block.vrm.netherrune": "Activation Rune [Nether Brick]",
   "block.vrm.scuterune": "Activation Rune [Scute]",
   "block.vrm.magmarune": "Activation Rune [Magma Cream]",
-
   "tooltip.mwaw:vulcansrevenge0": "Lights enemy on fire",
   "tooltip.mwaw:vulcansrevenge1": "Freeze enemy in place",
   "tooltip.mwaw:vulcansrevenge2": "Deals big damage to enemy",
   "tooltip.mwaw:vulcansrevenge3": "Applies Wither onto enemy",
-  "tooltip.mwaw:vulcansrevengeinfo": "[Right click to change Stance]"
+  "tooltip.mwaw:vulcansrevengeinfo": "[Right click to change Stance]",
+  "tooltip.mwaw:death1": "Attack have a chance of life steal",
+  "tooltip.mwaw:death2": "Right-Click to apply voodoo onto target",
+  "tooltip.mwaw:death3": "Shift Right-Click to mark surrounding targets, dealing more damage",
+  "tooltip.mwaw:death4": "Have a chance of revival on death & dealing target's half max hp damage",
+  "death.attack.death": "%1$s was reaped by %2$s"
 }

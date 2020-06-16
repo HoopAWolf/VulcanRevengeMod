@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "vrm:block/swordstone" }
+    "": {
+      "model": "vrm:block/swordstone"
+    }
   }
 }
