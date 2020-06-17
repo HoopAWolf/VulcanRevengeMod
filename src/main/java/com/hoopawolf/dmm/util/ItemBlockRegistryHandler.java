@@ -1,9 +1,10 @@
 package com.hoopawolf.dmm.util;
 
 import com.hoopawolf.dmm.blocks.*;
-import com.hoopawolf.dmm.items.weapons.BrokenSwordItem;
+import com.hoopawolf.dmm.items.RuneItem;
 import com.hoopawolf.dmm.items.weapons.DeathSwordItem;
 import com.hoopawolf.dmm.items.weapons.VulcanSwordItem;
+import com.hoopawolf.dmm.items.weapons.WarSwordItem;
 import com.hoopawolf.dmm.ref.Reference;
 import com.hoopawolf.dmm.tab.VRMItemGroup;
 import net.minecraft.block.Block;
@@ -32,7 +33,8 @@ public class ItemBlockRegistryHandler
     //ITEMS
     public static final RegistryObject<Item> VULCAN_SWORD = ITEMS.register("vulcansrevenge", () -> new VulcanSwordItem(ItemTier.DIAMOND, 3, -2.5f, new Item.Properties().maxDamage(500)));
     public static final RegistryObject<Item> DEATH_SWORD = ITEMS.register("death", () -> new DeathSwordItem(ItemTier.DIAMOND, 3, -1.5f, new Item.Properties().maxDamage(1000)));
-    public static final RegistryObject<Item> BROKEN_SWORD = ITEMS.register("brokensword", () -> new BrokenSwordItem(new Item.Properties().maxStackSize(1)));
+    public static final RegistryObject<Item> WAR_SWORD = ITEMS.register("war", () -> new WarSwordItem(ItemTier.DIAMOND, 3, -0.5f, new Item.Properties().maxDamage(1000)));
+    public static final RegistryObject<Item> RUNE_ITEM = ITEMS.register("rune", () -> new RuneItem(new Item.Properties().maxStackSize(1).group(VRMItemGroup.instance)));
 
     public static final RegistryObject<BlockItem> SWORD_STONE = ITEMS.register("swordstone",
             () -> new BlockItem(SWORD_STONE_BLOCK.get(), new Item.Properties().group(VRMItemGroup.instance)));

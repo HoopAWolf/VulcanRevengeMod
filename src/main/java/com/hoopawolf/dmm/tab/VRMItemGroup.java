@@ -19,6 +19,6 @@ public class VRMItemGroup extends ItemGroup
     @Override
     public ItemStack createIcon()
     {
-        return new ItemStack(ItemBlockRegistryHandler.BROKEN_SWORD.get());
+        return new ItemStack(ItemBlockRegistryHandler.VULCAN_SWORD.get());
     }
 }

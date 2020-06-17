@@ -1,8 +1,7 @@
 {
-  "parent": "block/cube_top",
+  "parent": "block/cube_column",
   "textures": {
-    "top": "vrm:blocks/toprune",
-    "side": "vrm:blocks/scuterune",
-    "bottom": "vrm:blocks/toprune"
+    "end": "vrm:blocks/toprune",
+    "side": "vrm:blocks/scuterune"
   }
 }

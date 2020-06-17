@@ -1,5 +1,6 @@
 package com.hoopawolf.dmm.items.weapons;
 
+import com.hoopawolf.dmm.helper.EntityHelper;
 import com.hoopawolf.dmm.tab.VRMItemGroup;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -8,12 +9,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.SwordItem;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -29,7 +30,7 @@ public class DeathSwordItem extends SwordItem
 {
     public DeathSwordItem(IItemTier tier, int attackDamageIn, float attackSpeedIn, Properties builder)
     {
-        super(tier, attackDamageIn, attackSpeedIn, builder.group(VRMItemGroup.instance));
+        super(tier, attackDamageIn, attackSpeedIn, builder.group(VRMItemGroup.instance).rarity(Rarity.UNCOMMON));
     }
 
     public static int getVoodooCoolDown(ItemStack stack)
@@ -87,11 +88,22 @@ public class DeathSwordItem extends SwordItem
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
-        if (!worldIn.isRemote && !playerIn.isCrouching())
+        if (!worldIn.isRemote)
         {
-            if (getMarkCoolDown(playerIn.getHeldItem(handIn)) <= 0)
+            if (!playerIn.isCrouching())
             {
-                setMarkCoolDown(playerIn.getHeldItem(handIn), 200);
+                if (getMarkCoolDown(playerIn.getHeldItem(handIn)) <= 0)
+                {
+                    setMarkCoolDown(playerIn.getHeldItem(handIn), 200);
+                    for (LivingEntity entity : EntityHelper.INSTANCE.getEntityLivingBaseNearby(playerIn, 5, 2, 5, 10))
+                    {
+                        entity.addPotionEffect(new EffectInstance(Effects.GLOWING, 180, 1));
+                    }
+                    playerIn.playSound(SoundEvents.ENTITY_SQUID_SQUIRT, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                } else
+                {
+                    playerIn.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                }
             }
         }
 
@@ -101,13 +113,20 @@ public class DeathSwordItem extends SwordItem
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity playerIn, LivingEntity target, Hand hand)
     {
-        if (playerIn.isCrouching())
+        if (!playerIn.world.isRemote)
         {
-            if (getVoodooCoolDown(playerIn.getHeldItem(hand)) <= 0)
+            if (playerIn.isCrouching())
             {
-                setVoodooCoolDown(playerIn.getHeldItem(hand), 200);
-                setVoodooID(playerIn.getHeldItem(hand), target.getEntityId());
-                return true;
+                if (getVoodooCoolDown(playerIn.getHeldItem(hand)) <= 0)
+                {
+                    setVoodooCoolDown(playerIn.getHeldItem(hand), 200);
+                    setVoodooID(playerIn.getHeldItem(hand), target.getEntityId());
+                    playerIn.playSound(SoundEvents.ENTITY_ILLUSIONER_PREPARE_BLINDNESS, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                    return true;
+                } else
+                {
+                    playerIn.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                }
             }
         }
 
@@ -119,14 +138,14 @@ public class DeathSwordItem extends SwordItem
     {
         super.hitEntity(stack, target, attacker);
 
-        if (attacker.world.rand.nextInt(100) < 20)
+        if (attacker.world.rand.nextInt(100) < 30 || target.isPotionActive(Effects.GLOWING))
         {
             attacker.heal(this.getAttackDamage() * 0.5F);
         }
 
         if (target.isPotionActive(Effects.GLOWING))
         {
-            target.attackEntityFrom(new DamageSource("death"), this.getAttackDamage() * 2.0F);
+            target.attackEntityFrom(new DamageSource("reaper"), this.getAttackDamage() * 2.0F);
         }
 
         return true;
@@ -186,9 +205,9 @@ public class DeathSwordItem extends SwordItem
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death1")).setStyle(new Style().setItalic(true).setColor(TextFormatting.LIGHT_PURPLE)));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death2") + ((getVoodooCoolDown(stack) > 0) ? " " + (getVoodooCoolDown(stack) / 20) + "s" : "")).setStyle(new Style().setItalic(true).setColor(TextFormatting.LIGHT_PURPLE)));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death3") + ((getMarkCoolDown(stack) > 0) ? " " + (getMarkCoolDown(stack) / 20) + "s" : "")).setStyle(new Style().setItalic(true).setColor(TextFormatting.LIGHT_PURPLE)));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death4") + ((getDeathCoolDown(stack) > 0) ? " " + (getDeathCoolDown(stack) / 20) + "s" : "")).setStyle(new Style().setItalic(true).setColor(TextFormatting.LIGHT_PURPLE)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death1")).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death2") + ((getMarkCoolDown(stack) > 0) ? " [" + (getMarkCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getMarkCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death3") + ((getVoodooCoolDown(stack) > 0) ? " [" + (getVoodooCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getVoodooCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death4") + ((getDeathCoolDown(stack) > 0) ? " [" + (getDeathCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getDeathCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
     }
 }

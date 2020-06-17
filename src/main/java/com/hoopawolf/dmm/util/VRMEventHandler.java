@@ -35,7 +35,7 @@ public class VRMEventHandler
                     player.setHealth(player.getMaxHealth() * 0.5F);
                     DeathSwordItem.setDeathCoolDown(player.getHeldItemMainhand(), 600);
                     player.playSound(SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 5.0F, 0.1F);
-                    player.addPotionEffect(new EffectInstance(Effects.BLINDNESS, 1, 1));
+                    player.addPotionEffect(new EffectInstance(Effects.BLINDNESS, 10, 1));
                 }
             }
         }
@@ -56,7 +56,7 @@ public class VRMEventHandler
                         player.world.getEntityByID(DeathSwordItem.getVoodooID(player.getHeldItemMainhand())).isAlive())
                 {
                     event.setCanceled(true);
-                    player.world.getEntityByID(DeathSwordItem.getVoodooID(player.getHeldItemMainhand())).attackEntityFrom(new DamageSource("death"), event.getAmount());
+                    player.world.getEntityByID(DeathSwordItem.getVoodooID(player.getHeldItemMainhand())).attackEntityFrom(new DamageSource("reaper"), event.getAmount());
                     player.playSound(SoundEvents.ENTITY_VEX_CHARGE, SoundCategory.BLOCKS, 5.0F, 0.1F);
                 }
             }
