@@ -59,6 +59,13 @@ public class VRMEventHandler
                     player.world.getEntityByID(DeathSwordItem.getVoodooID(player.getHeldItemMainhand())).attackEntityFrom(new DamageSource("reaper"), event.getAmount());
                     player.playSound(SoundEvents.ENTITY_VEX_CHARGE, SoundCategory.BLOCKS, 5.0F, 0.1F);
                 }
+
+                if (player.getHealth() < player.getMaxHealth() * 0.3F && player.getHeldItemMainhand().getItem().equals(ItemBlockRegistryHandler.WAR_SWORD.get().getItem()) &&
+                        event.getSource().getTrueSource() instanceof LivingEntity)
+                {
+                    event.getSource().getTrueSource().setFire(10);
+                    player.playSound(SoundEvents.BLOCK_FURNACE_FIRE_CRACKLE, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                }
             }
         }
     }
