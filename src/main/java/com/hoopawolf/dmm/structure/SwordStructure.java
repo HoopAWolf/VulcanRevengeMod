@@ -79,7 +79,7 @@ public class SwordStructure extends Structure<NoFeatureConfig>
     {
         ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
 
-        if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z)
+        if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z && rand.nextInt(100) < 40)
         {
             return chunkGen.hasStructure(biome, this);
         }
@@ -109,7 +109,7 @@ public class SwordStructure extends Structure<NoFeatureConfig>
 
             this.recalculateStructureSize();
 
-            Reference.LOGGER.log(Level.DEBUG, "Hunter Camp at " + (blockpos.getX()) + " " + blockpos.getY() + " " + (blockpos.getZ()));
+            Reference.LOGGER.log(Level.DEBUG, "Sword Structure at " + (blockpos.getX()) + " " + blockpos.getY() + " " + (blockpos.getZ()));
         }
 
     }

@@ -1,6 +1,8 @@
 package com.hoopawolf.dmm.items.weapons;
 
 import com.hoopawolf.dmm.helper.EntityHelper;
+import com.hoopawolf.dmm.network.VRMPacketHandler;
+import com.hoopawolf.dmm.network.packets.client.SpawnParticleMessage;
 import com.hoopawolf.dmm.tab.VRMItemGroup;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -11,10 +13,10 @@ import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.SwordItem;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -90,7 +92,7 @@ public class DeathSwordItem extends SwordItem
     {
         if (!worldIn.isRemote)
         {
-            if (!playerIn.isCrouching())
+            if (!playerIn.isCrouching() && handIn.equals(Hand.MAIN_HAND))
             {
                 if (getMarkCoolDown(playerIn.getHeldItem(handIn)) <= 0)
                 {
@@ -115,7 +117,7 @@ public class DeathSwordItem extends SwordItem
     {
         if (!playerIn.world.isRemote)
         {
-            if (playerIn.isCrouching())
+            if (playerIn.isCrouching() && hand.equals(Hand.MAIN_HAND))
             {
                 if (getVoodooCoolDown(playerIn.getHeldItem(hand)) <= 0)
                 {
@@ -189,7 +191,8 @@ public class DeathSwordItem extends SwordItem
 
                 if (entity != null)
                 {
-                    worldIn.addParticle(ParticleTypes.BARRIER, entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ(), 0.0D, 0.0D, 0.0D);
+                    SpawnParticleMessage spawnParticleMessage = new SpawnParticleMessage(new Vec3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight() + 0.5D, entity.getPosZ()), new Vec3d(0.0D, 0.0D, 0.0D), 1, 3, 0.0F);
+                    VRMPacketHandler.packetHandler.sendToDimension(entity.dimension, spawnParticleMessage);
                 }
             }
         }
@@ -205,9 +208,9 @@ public class DeathSwordItem extends SwordItem
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death1")).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death2") + ((getMarkCoolDown(stack) > 0) ? " [" + (getMarkCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getMarkCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death3") + ((getVoodooCoolDown(stack) > 0) ? " [" + (getVoodooCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getVoodooCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:death4") + ((getDeathCoolDown(stack) > 0) ? " [" + (getDeathCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getDeathCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:death1")).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:death2") + ((getMarkCoolDown(stack) > 0) ? " [" + (getMarkCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getMarkCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:death3") + ((getVoodooCoolDown(stack) > 0) ? " [" + (getVoodooCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getVoodooCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:death4") + ((getDeathCoolDown(stack) > 0) ? " [" + (getDeathCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getDeathCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
     }
 }

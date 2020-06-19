@@ -53,7 +53,7 @@ public class VulcanSwordItem extends SwordItem
     {
         if (!worldIn.isRemote)
         {
-            ItemStack itemStack = playerIn.getHeldItemMainhand();
+            ItemStack itemStack = playerIn.getHeldItem(handIn);
 
             setType(itemStack, getType(itemStack) + 1);
 
@@ -117,10 +117,16 @@ public class VulcanSwordItem extends SwordItem
     }
 
     @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+    {
+        return false;
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:vulcansrevenge") + getType(stack)).setStyle(new Style().setItalic(true).setColor(TextFormatting.LIGHT_PURPLE)));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:vulcansrevengeinfo")).setStyle(new Style().setItalic(true).setColor(TextFormatting.DARK_GRAY)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:vulcansrevenge") + getType(stack)).setStyle(new Style().setItalic(true).setColor(TextFormatting.LIGHT_PURPLE)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:vulcansrevengeinfo")).setStyle(new Style().setItalic(true).setColor(TextFormatting.GRAY)));
     }
 }

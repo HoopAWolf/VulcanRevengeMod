@@ -1,5 +1,7 @@
 package com.hoopawolf.dmm.blocks.tileentity;
 
+import com.hoopawolf.dmm.network.VRMPacketHandler;
+import com.hoopawolf.dmm.network.packets.client.SpawnParticleMessage;
 import com.hoopawolf.dmm.util.ItemBlockRegistryHandler;
 import com.hoopawolf.dmm.util.TileEntityRegistryHandler;
 import net.minecraft.block.Blocks;
@@ -10,7 +12,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -170,7 +171,7 @@ public class SwordStoneTileEntity extends TileEntity implements ITickableTileEnt
                     {
                         if (!world.isRemote)
                         {
-                            int max = world.rand.nextInt(15) + 8;
+                            int max = world.rand.nextInt(8) + 5;
                             for (int i = 0; i < max; ++i)
                             {
                                 MobEntity entity = (MobEntity) phraseList.get(((int) timer / 150) - 1)[world.rand.nextInt(3)].create(world);
@@ -185,12 +186,19 @@ public class SwordStoneTileEntity extends TileEntity implements ITickableTileEnt
 
                     timer += 0.5F;
 
-                    for (BlockPos pos : runePos)
+                    if (!world.isRemote)
                     {
-                        Vec3d block = new Vec3d(getPos().getX() + pos.getX() + 0.5D, getPos().getY() + pos.getY() + 1.75D, getPos().getZ() + pos.getZ() + 0.5D);
-                        Vec3d dir = new Vec3d(getPos().getX() + 0.5D, getPos().getY(), getPos().getZ() + 0.5).subtract(new Vec3d(block.getX(), block.getY(), block.getZ())).normalize();
-                        this.world.addParticle(ParticleTypes.FIREWORK, block.getX(), block.getY(), block.getZ(), dir.getX(), dir.getY(), dir.getZ());
-                        this.world.addParticle(ParticleTypes.END_ROD, block.getX(), block.getY(), block.getZ(), dir.getX(), dir.getY(), dir.getZ());
+                        for (BlockPos pos : runePos)
+                        {
+                            Vec3d block = new Vec3d(getPos().getX() + pos.getX() + 0.5D, getPos().getY() + pos.getY() + 1.75D, getPos().getZ() + pos.getZ() + 0.5D);
+                            Vec3d dir = new Vec3d(getPos().getX() + 0.5D, getPos().getY(), getPos().getZ() + 0.5).subtract(new Vec3d(block.getX(), block.getY(), block.getZ())).normalize();
+
+                            SpawnParticleMessage particleFireworks = new SpawnParticleMessage(new Vec3d(block.getX(), block.getY(), block.getZ()), new Vec3d(dir.getX(), dir.getY(), dir.getZ()), 3, 1, 0.0F);
+                            VRMPacketHandler.packetHandler.sendToDimension(world.dimension.getType(), particleFireworks);
+
+                            SpawnParticleMessage particleEndrod = new SpawnParticleMessage(new Vec3d(block.getX(), block.getY(), block.getZ()), new Vec3d(dir.getX(), dir.getY(), dir.getZ()), 3, 2, 0.0F);
+                            VRMPacketHandler.packetHandler.sendToDimension(world.dimension.getType(), particleEndrod);
+                        }
                     }
 
                     if (getTimer() > 600)

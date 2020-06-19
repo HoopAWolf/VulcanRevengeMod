@@ -1,6 +1,8 @@
 package com.hoopawolf.dmm.items.weapons;
 
 import com.hoopawolf.dmm.helper.EntityHelper;
+import com.hoopawolf.dmm.network.VRMPacketHandler;
+import com.hoopawolf.dmm.network.packets.client.SpawnParticleMessage;
 import com.hoopawolf.dmm.tab.VRMItemGroup;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,6 +20,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -67,7 +70,7 @@ public class WarSwordItem extends SwordItem
     {
         if (!worldIn.isRemote)
         {
-            if (!playerIn.isCrouching())
+            if (!playerIn.isCrouching() && handIn.equals(Hand.MAIN_HAND))
             {
                 if (getWarCryCoolDown(playerIn.getHeldItem(handIn)) <= 0)
                 {
@@ -86,29 +89,43 @@ public class WarSwordItem extends SwordItem
                 }
             } else
             {
-                if (getRageCoolDown(playerIn.getHeldItem(handIn)) <= 0)
+                if (handIn.equals(Hand.MAIN_HAND))
                 {
-                    setRageCoolDown(playerIn.getHeldItem(handIn), 200);
-                    MobEntity temp = null;
-                    for (LivingEntity entity : EntityHelper.INSTANCE.getEntityLivingBaseNearby(playerIn, 10, 2, 10, 15))
+                    if (getRageCoolDown(playerIn.getHeldItem(handIn)) <= 0)
                     {
-                        if (entity instanceof MobEntity)
+                        setRageCoolDown(playerIn.getHeldItem(handIn), 200);
+                        MobEntity temp = null;
+                        for (LivingEntity entity : EntityHelper.INSTANCE.getEntityLivingBaseNearby(playerIn, 10, 2, 10, 15))
                         {
-                            if (temp == null)
+                            if (entity instanceof MobEntity)
                             {
-                                temp = (MobEntity) entity;
-                            } else
-                            {
-                                ((MobEntity) entity).setAttackTarget(temp);
-                                temp = null;
+                                if (temp == null)
+                                {
+                                    temp = (MobEntity) entity;
+                                } else
+                                {
+                                    ((MobEntity) entity).setAttackTarget(temp);
+                                    temp = null;
+                                }
                             }
                         }
-                    }
 
-                    playerIn.playSound(SoundEvents.ENTITY_ENDER_DRAGON_GROWL, SoundCategory.BLOCKS, 5.0F, 0.1F);
-                } else
-                {
-                    playerIn.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                        for (int i = 1; i <= 180; ++i)
+                        {
+                            double yaw = i * 360 / 180;
+                            double speed = 1.5;
+                            double xSpeed = speed * Math.cos(Math.toRadians(yaw));
+                            double zSpeed = speed * Math.sin(Math.toRadians(yaw));
+
+                            SpawnParticleMessage spawnParticleMessage = new SpawnParticleMessage(new Vec3d(playerIn.getPosX(), playerIn.getPosY() + 0.5F, playerIn.getPosZ()), new Vec3d(xSpeed, 0.0D, zSpeed), 3, 0, 0.0F);
+                            VRMPacketHandler.packetHandler.sendToDimension(playerIn.dimension, spawnParticleMessage);
+                        }
+
+                        playerIn.playSound(SoundEvents.ENTITY_ENDER_DRAGON_GROWL, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                    } else
+                    {
+                        playerIn.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                    }
                 }
             }
         }
@@ -173,9 +190,9 @@ public class WarSwordItem extends SwordItem
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:war1")).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:war2") + ((getWarCryCoolDown(stack) > 0) ? " [" + (getWarCryCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getWarCryCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:war3") + ((getRageCoolDown(stack) > 0) ? " [" + (getRageCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getRageCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
-        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.mwaw:war4")).setStyle(new Style().setItalic(true).setColor(TextFormatting.GRAY)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:war1")).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:war2") + ((getWarCryCoolDown(stack) > 0) ? " [" + (getWarCryCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getWarCryCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:war3") + ((getRageCoolDown(stack) > 0) ? " [" + (getRageCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getRageCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:war4")).setStyle(new Style().setItalic(true).setColor(TextFormatting.GRAY)));
     }
 }

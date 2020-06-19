@@ -3,11 +3,10 @@ package com.hoopawolf.dmm.network;
 import com.hoopawolf.dmm.network.packets.client.MessageToClient;
 import com.hoopawolf.dmm.network.packets.client.SpawnParticleMessage;
 import com.hoopawolf.dmm.ref.Reference;
+import com.hoopawolf.dmm.util.ParticleRegistryHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.LogicalSide;
@@ -20,14 +19,15 @@ import java.util.function.Supplier;
 
 public class MessageHandlerOnClient
 {
-    static final BasicParticleType[] types = //0 - FIREWORKS, 1 - HEART, 2 - BLOCK TYPE, 3 - VILLAGER ANGRY, 4 - CLOUD, 5 - HAPPY VILLAGER, 6 - YELLOW ENCHANTMENT
+    static final BasicParticleType[] types =
             {
-                    ParticleTypes.FIREWORK,
-                    ParticleTypes.HEART,
-                    ParticleTypes.ITEM_SLIME, // PLACE HOLDER FOR BLOCK
-                    ParticleTypes.ANGRY_VILLAGER,
-                    ParticleTypes.CLOUD,
-                    ParticleTypes.HAPPY_VILLAGER
+                    ParticleTypes.FLAME, //0
+                    ParticleTypes.FIREWORK, //1
+                    ParticleTypes.END_ROD, //2
+                    ParticleRegistryHandler.DEATH_MARK_PARTICLE.get(), //3
+                    ParticleTypes.SMOKE, //4
+                    ParticleRegistryHandler.PLAGUE_PARTICLE.get(), //5
+                    ParticleTypes.ITEM_SLIME, //6
             };
 
     public static void onMessageReceived(final MessageToClient message, Supplier<NetworkEvent.Context> ctxSupplier)
@@ -76,8 +76,8 @@ public class MessageHandlerOnClient
                     double speedY = targetSpeed.y;
                     double speedZ = targetSpeed.z;
 
-                    worldClient.addParticle(_message.getPartcleType() == 2 ? new BlockParticleData(ParticleTypes.BLOCK, worldClient.getBlockState(new BlockPos(spawnXpos, spawnYpos - 1.0F, spawnZpos))) : types[_message.getPartcleType()],
-                            MathHelper.lerp(worldClient.rand.nextDouble(), spawnXpos + spread,
+                    worldClient.addParticle(/*_message.getPartcleType() == 2 ? new BlockParticleData(ParticleTypes.BLOCK, worldClient.getBlockState(new BlockPos(spawnXpos, spawnYpos - 1.0F, spawnZpos))) : */types[_message.getPartcleType()],
+                            true, MathHelper.lerp(worldClient.rand.nextDouble(), spawnXpos + spread,
                                     spawnXpos - spread), spawnYpos,
                             MathHelper.lerp(worldClient.rand.nextDouble(), spawnZpos + spread, spawnZpos - spread),
                             speedX, speedY, speedZ);
