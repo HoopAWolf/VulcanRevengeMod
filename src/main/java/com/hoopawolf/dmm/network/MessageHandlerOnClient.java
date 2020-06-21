@@ -28,6 +28,7 @@ public class MessageHandlerOnClient
                     ParticleTypes.SMOKE, //4
                     ParticleRegistryHandler.PLAGUE_PARTICLE.get(), //5
                     ParticleTypes.ITEM_SLIME, //6
+                    ParticleTypes.HEART, //7
             };
 
     public static void onMessageReceived(final MessageToClient message, Supplier<NetworkEvent.Context> ctxSupplier)

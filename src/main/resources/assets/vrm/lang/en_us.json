@@ -33,9 +33,13 @@
   "tooltip.vrm:war3": "[Shift Right-Click] Inflict rage and cause near-by mobs to fight each other",
   "tooltip.vrm:war4": "[Gain resistance and strength on low health]",
   "tooltip.vrm:pes1": "Shoot Magical Arrow which causes Plague (will release toxin when target dies)",
-  "tooltip.vrm:pes2": "[Charging] Releases toxin around charger",
-  "tooltip.vrm:pes3": "[Shift Right-Click] ",
+  "tooltip.vrm:pes2": "[Crouching Charge] Releases toxin around charger",
+  "tooltip.vrm:pes3": "[Crouching Shoot] Shoots 3 Magical Arrows but with poor accuracy",
   "tooltip.vrm:pes4": "[Immune to all Negative potion effects]",
+  "tooltip.vrm:fam1": "Absorbs nearby life force to fill hunger",
+  "tooltip.vrm:fam2": "[Charging] Releases toxin around charger",
+  "tooltip.vrm:fam3": "[Shift Right-Click] ",
+  "tooltip.vrm:fam4": "[Immune to all Negative potion effects]",
   "death.attack.death": "%1$s was reaped by %2$s",
   "effect.vrm.plagueeffect": "Plague"
 }

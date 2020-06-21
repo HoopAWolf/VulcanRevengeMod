@@ -12,10 +12,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.item.ShootableItem;
-import net.minecraft.item.UseAction;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.stats.Stats;
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class PesBowItem extends ShootableItem
+public class PesBowItem extends BowItem
 {
     public PesBowItem(Properties builder)
     {
@@ -57,18 +56,6 @@ public class PesBowItem extends ShootableItem
         });
     }
 
-    public static float getArrowVelocity(int charge)
-    {
-        float f = (float) charge / 20.0F;
-        f = (f * f + f * 2.0F) / 3.0F;
-        if (f > 1.0F)
-        {
-            f = 1.0F;
-        }
-
-        return f;
-    }
-
     @Override
     public Predicate<ItemStack> getInventoryAmmoPredicate()
     {
@@ -78,7 +65,7 @@ public class PesBowItem extends ShootableItem
     @Override
     public void onUse(World worldIn, LivingEntity livingEntityIn, ItemStack stack, int count)
     {
-        if (livingEntityIn.ticksExisted % 50 == 0)
+        if (livingEntityIn.isCrouching() && livingEntityIn.ticksExisted % 50 == 0)
         {
             livingEntityIn.playSound(SoundEvents.ENTITY_PUFFER_FISH_BLOW_OUT, 0.5F, 0.1F);
             if (!worldIn.isRemote)
@@ -113,42 +100,55 @@ public class PesBowItem extends ShootableItem
             {
                 if (!worldIn.isRemote)
                 {
-                    AbstractArrowEntity abstractarrowentity = new PesArrowEntity(worldIn, playerentity);
-                    abstractarrowentity = customeArrow(abstractarrowentity);
-                    abstractarrowentity.shoot(playerentity, playerentity.rotationPitch, playerentity.rotationYaw, 0.0F, f * 3.0F, 1.0F);
-                    if (f == 1.0F)
+                    int _iteration = 1;
+                    float _spread = 0.0F;
+
+                    if (playerentity.isCrouching())
                     {
-                        abstractarrowentity.setIsCritical(true);
+                        _iteration = 3;
+                        _spread = -5.0F;
                     }
 
-                    int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
-                    if (j > 0)
+                    for (int iteration = 0; iteration < _iteration; ++iteration)
                     {
-                        abstractarrowentity.setDamage(abstractarrowentity.getDamage() + (double) j * 0.5D + 0.5D);
+                        AbstractArrowEntity abstractarrowentity = new PesArrowEntity(worldIn, playerentity);
+                        abstractarrowentity = customeArrow(abstractarrowentity);
+                        abstractarrowentity.shoot(playerentity, playerentity.rotationPitch, playerentity.rotationYaw + _spread, 0.0F, f * 3.0F, (_iteration == 3) ? 3.0F : 1.0F);
+                        if (f == 1.0F)
+                        {
+                            abstractarrowentity.setIsCritical(true);
+                        }
+
+                        int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
+                        if (j > 0)
+                        {
+                            abstractarrowentity.setDamage(abstractarrowentity.getDamage() + (double) j * 0.5D + 0.5D);
+                        }
+
+                        int k = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
+                        if (k > 0)
+                        {
+                            abstractarrowentity.setKnockbackStrength(k);
+                        }
+
+                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0)
+                        {
+                            abstractarrowentity.setFire(100);
+                        }
+
+                        stack.damageItem(1, playerentity, (p_220009_1_) ->
+                        {
+                            p_220009_1_.sendBreakAnimation(playerentity.getActiveHand());
+                        });
+
+                        worldIn.addEntity(abstractarrowentity);
+                        _spread += 5.0F;
                     }
 
-                    int k = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
-                    if (k > 0)
-                    {
-                        abstractarrowentity.setKnockbackStrength(k);
-                    }
+                    worldIn.playSound(null, playerentity.getPosX(), playerentity.getPosY(), playerentity.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
-                    if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0)
-                    {
-                        abstractarrowentity.setFire(100);
-                    }
-
-                    stack.damageItem(1, playerentity, (p_220009_1_) ->
-                    {
-                        p_220009_1_.sendBreakAnimation(playerentity.getActiveHand());
-                    });
-
-                    worldIn.addEntity(abstractarrowentity);
+                    playerentity.addStat(Stats.ITEM_USED.get(this));
                 }
-
-                worldIn.playSound(null, playerentity.getPosX(), playerentity.getPosY(), playerentity.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-
-                playerentity.addStat(Stats.ITEM_USED.get(this));
             }
         }
     }
@@ -160,36 +160,27 @@ public class PesBowItem extends ShootableItem
         {
             if (entityIn instanceof LivingEntity && isSelected)
             {
-                ArrayList<Effect> array = new ArrayList<>();
-                for (EffectInstance eff : ((LivingEntity) entityIn).getActivePotionEffects())
+                if (!((LivingEntity) entityIn).getActivePotionEffects().isEmpty())
                 {
-                    if (!eff.getPotion().isBeneficial())
+                    ArrayList<Effect> array = new ArrayList<>();
+                    for (EffectInstance eff : ((LivingEntity) entityIn).getActivePotionEffects())
                     {
-                        array.add(eff.getPotion());
+                        if (!eff.getPotion().isBeneficial())
+                        {
+                            array.add(eff.getPotion());
+                        }
                     }
-                }
 
-                if (array.size() > 0)
-                {
-                    for (Effect eff : array)
+                    if (array.size() > 0)
                     {
-                        ((LivingEntity) entityIn).removePotionEffect(eff);
+                        for (Effect eff : array)
+                        {
+                            ((LivingEntity) entityIn).removePotionEffect(eff);
+                        }
                     }
                 }
             }
         }
-    }
-
-    @Override
-    public int getUseDuration(ItemStack stack)
-    {
-        return 72000;
-    }
-
-    @Override
-    public UseAction getUseAction(ItemStack stack)
-    {
-        return UseAction.BOW;
     }
 
     @Override
@@ -204,6 +195,7 @@ public class PesBowItem extends ShootableItem
         return ActionResult.resultConsume(itemstack);
     }
 
+    @Override
     public AbstractArrowEntity customeArrow(AbstractArrowEntity arrow)
     {
         return arrow;
