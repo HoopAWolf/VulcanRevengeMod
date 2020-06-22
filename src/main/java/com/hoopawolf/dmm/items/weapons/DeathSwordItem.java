@@ -97,7 +97,7 @@ public class DeathSwordItem extends SwordItem
                 if (getMarkCoolDown(playerIn.getHeldItem(handIn)) <= 0)
                 {
                     setMarkCoolDown(playerIn.getHeldItem(handIn), 200);
-                    for (LivingEntity entity : EntityHelper.INSTANCE.getEntityLivingBaseNearby(playerIn, 5, 2, 5, 10))
+                    for (LivingEntity entity : EntityHelper.getEntityLivingBaseNearby(playerIn, 5, 2, 5, 10))
                     {
                         entity.addPotionEffect(new EffectInstance(Effects.GLOWING, 180, 1));
                     }
@@ -183,8 +183,7 @@ public class DeathSwordItem extends SwordItem
                     setVoodooID(stack, 0);
                 }
             }
-        } else
-        {
+
             if (getVoodooID(stack) != 0)
             {
                 Entity entity = worldIn.getEntityByID(getVoodooID(stack));

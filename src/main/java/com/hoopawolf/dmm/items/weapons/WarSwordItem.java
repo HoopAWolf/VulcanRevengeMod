@@ -95,7 +95,7 @@ public class WarSwordItem extends SwordItem
                     {
                         setRageCoolDown(playerIn.getHeldItem(handIn), 200);
                         MobEntity temp = null;
-                        for (LivingEntity entity : EntityHelper.INSTANCE.getEntityLivingBaseNearby(playerIn, 10, 2, 10, 15))
+                        for (LivingEntity entity : EntityHelper.getEntityLivingBaseNearby(playerIn, 10, 2, 10, 15))
                         {
                             if (entity instanceof MobEntity)
                             {

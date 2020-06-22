@@ -72,7 +72,7 @@ public class PlagueParticle extends SpriteTexturedParticle
 
         }
 
-        for (LivingEntity entity : EntityHelper.INSTANCE.getEntitiesNearbyWithPos(world, getBoundingBox(), new BlockPos(this.posX, this.posY, this.posZ), LivingEntity.class, 2, 2, 2, 3))
+        for (LivingEntity entity : EntityHelper.getEntitiesNearbyWithPos(world, getBoundingBox(), new BlockPos(this.posX, this.posY, this.posZ), LivingEntity.class, 2, 2, 2, 3))
         {
             SetPotionEffectMultipleMessage _messagePoison = new SetPotionEffectMultipleMessage(entity.getEntityId(), 300, 1, 0, 3);
             VRMPacketHandler.channel.sendToServer(_messagePoison);
