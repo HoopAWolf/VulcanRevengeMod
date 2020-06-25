@@ -29,6 +29,8 @@ public class MessageHandlerOnClient
                     ParticleRegistryHandler.PLAGUE_PARTICLE.get(), //5
                     ParticleTypes.ITEM_SLIME, //6
                     ParticleTypes.HEART, //7
+                    ParticleTypes.ANGRY_VILLAGER, //8
+                    ParticleTypes.WITCH, //9
             };
 
     public static void onMessageReceived(final MessageToClient message, Supplier<NetworkEvent.Context> ctxSupplier)

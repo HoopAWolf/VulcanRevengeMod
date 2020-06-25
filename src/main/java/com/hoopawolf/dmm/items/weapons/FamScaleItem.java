@@ -4,6 +4,7 @@ import com.hoopawolf.dmm.helper.EntityHelper;
 import com.hoopawolf.dmm.network.VRMPacketHandler;
 import com.hoopawolf.dmm.network.packets.client.SpawnParticleMessage;
 import com.hoopawolf.dmm.tab.VRMItemGroup;
+import com.hoopawolf.dmm.util.PotionRegistryHandler;
 import net.minecraft.block.BushBlock;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -37,6 +38,19 @@ public class FamScaleItem extends Item
         super(properties.group(VRMItemGroup.instance).rarity(Rarity.UNCOMMON));
     }
 
+    public static int getSacrificeCoolDown(ItemStack stack)
+    {
+        if (!stack.hasTag())
+            stack.getOrCreateTag().putInt("sacrifice", 0);
+
+        return stack.getTag().getInt("sacrifice");
+    }
+
+    public static void setSacrificeCoolDown(ItemStack stack, int amount)
+    {
+        stack.getOrCreateTag().putInt("sacrifice", amount);
+    }
+
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
     {
@@ -46,24 +60,26 @@ public class FamScaleItem extends Item
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
-        if (!worldIn.isRemote)
+        if (handIn.equals(Hand.MAIN_HAND) && playerIn.isCrouching())
         {
-            if (!playerIn.isCrouching() && handIn.equals(Hand.MAIN_HAND))
+            if (playerIn.getFoodStats().getFoodLevel() > playerIn.getHealth())
             {
-                for (LivingEntity entity : EntityHelper.getEntityLivingBaseNearby(playerIn, 5, 2, 5, 10))
+                if (!worldIn.isRemote)
                 {
-                    if (entity instanceof AnimalEntity)
-                    {
-                        if (!entity.isChild() && !((AnimalEntity) entity).isInLove())
-                        {
-                            ((AnimalEntity) entity).setInLove(600);
-                            ((AnimalEntity) entity).setGrowingAge(0);
-                            SpawnParticleMessage spawnParticleMessage = new SpawnParticleMessage(new Vec3d(entity.getPosX(), entity.getPosY() + 0.5F, entity.getPosZ()), new Vec3d(0.0F, 0.0D, 0.0F), 3, 7, entity.getWidth());
-                            VRMPacketHandler.packetHandler.sendToDimension(playerIn.dimension, spawnParticleMessage);
-                        }
-                    }
+                    setSacrificeCoolDown(playerIn.getHeldItem(handIn), 300);
+                    playerIn.setHealth(playerIn.getFoodStats().getFoodLevel());
+                    playerIn.getFoodStats().setFoodLevel(0);
+                    playerIn.playSound(SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.BLOCKS, 5.0F, 0.1F);
                 }
-                playerIn.playSound(SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, SoundCategory.BLOCKS, 5.0F, 0.1F);
+            } else
+            {
+                if (!worldIn.isRemote)
+                {
+                    playerIn.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                } else
+                {
+                    EntityHelper.sendCoolDownMessage(playerIn, getSacrificeCoolDown(playerIn.getHeldItem(handIn)));
+                }
             }
         }
 
@@ -75,11 +91,38 @@ public class FamScaleItem extends Item
     {
         if (!worldIn.isRemote)
         {
-            if (entityIn.ticksExisted % 10 == 0)
+            if (entityIn.ticksExisted % 2 == 0)
+            {
+                if (getSacrificeCoolDown(stack) > 0)
+                {
+                    setSacrificeCoolDown(stack, getSacrificeCoolDown(stack) - 1);
+                }
+            }
+
+            if (entityIn.ticksExisted % 20 == 0)
             {
                 if (entityIn instanceof PlayerEntity)
                 {
-                    if (((PlayerEntity) entityIn).getFoodStats().needFood())
+                    PlayerEntity playerIn = (PlayerEntity) entityIn;
+
+                    if ((isSelected || playerIn.getHeldItemOffhand().equals(stack)) && worldIn.rand.nextInt(100) < 50)
+                    {
+                        for (LivingEntity entity : EntityHelper.getEntityLivingBaseNearby(playerIn, 5, 2, 5, 10))
+                        {
+                            if (entity instanceof AnimalEntity)
+                            {
+                                if (!entity.isChild() && !((AnimalEntity) entity).isInLove())
+                                {
+                                    ((AnimalEntity) entity).setInLove(600);
+                                    ((AnimalEntity) entity).setGrowingAge(0);
+                                    SpawnParticleMessage spawnParticleMessage = new SpawnParticleMessage(new Vec3d(entity.getPosX(), entity.getPosY() + 0.5F, entity.getPosZ()), new Vec3d(0.0F, 0.0D, 0.0F), 3, 7, entity.getWidth());
+                                    VRMPacketHandler.packetHandler.sendToDimension(playerIn.dimension, spawnParticleMessage);
+                                }
+                            }
+                        }
+                    }
+
+                    if (playerIn.getFoodStats().needFood())
                     {
                         if (worldIn.rand.nextInt(100) < 50)
                         {
@@ -92,7 +135,7 @@ public class FamScaleItem extends Item
                                     if (worldIn.getBlockState(pos).getBlock() instanceof BushBlock)
                                     {
                                         worldIn.destroyBlock(pos, false);
-                                        increaseFood((PlayerEntity) entityIn);
+                                        increaseFood(playerIn);
                                         _flag = true;
                                         break;
                                     }
@@ -105,13 +148,16 @@ public class FamScaleItem extends Item
                             }
                         } else
                         {
-                            if (isSelected)
+                            if ((isSelected || playerIn.getHeldItemOffhand().equals(stack)))
                             {
                                 for (LivingEntity entity : EntityHelper.getEntityLivingBaseNearby(entityIn, range, 1, range, 15))
                                 {
-                                    entity.attackEntityFrom(DamageSource.STARVE, 2);
-                                    increaseFood((PlayerEntity) entityIn);
-                                    break;
+                                    if (!entity.isPotionActive(PotionRegistryHandler.DAZED_EFFECT.get()))
+                                    {
+                                        entity.attackEntityFrom(DamageSource.STARVE, 2);
+                                        increaseFood(playerIn);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -132,7 +178,7 @@ public class FamScaleItem extends Item
     {
         tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:fam1")).setStyle(new Style().setColor(TextFormatting.LIGHT_PURPLE)));
         tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:fam2")).setStyle(new Style().setItalic(true).setColor(TextFormatting.GRAY)));
-//        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:death3") + ((getVoodooCoolDown(stack) > 0) ? " [" + (getVoodooCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getVoodooCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
-//        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:death4") + ((getDeathCoolDown(stack) > 0) ? " [" + (getDeathCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getDeathCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:fam3")).setStyle(new Style().setItalic(true).setColor(TextFormatting.GRAY)));
+        tooltip.add(new TranslationTextComponent(I18n.format("tooltip.vrm:fam4") + ((getSacrificeCoolDown(stack) > 0) ? " [" + (getSacrificeCoolDown(stack) / 20) + "s]" : "")).setStyle(new Style().setItalic(true).setColor(((getSacrificeCoolDown(stack) > 0) ? TextFormatting.DARK_GRAY : TextFormatting.GRAY))));
     }
 }

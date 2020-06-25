@@ -1,6 +1,6 @@
 package com.hoopawolf.dmm.blocks.tileentity;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -76,7 +76,7 @@ public abstract class RuneTileEntity extends TileEntity
         this.read(tag);
     }
 
-    public abstract ItemStack getActivationItem();
+    public abstract Item getActivationItem();
 
     public abstract Vec3i getRayColor();
 }

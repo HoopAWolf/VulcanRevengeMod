@@ -90,11 +90,11 @@ public class DeathSwordItem extends SwordItem
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
-        if (!worldIn.isRemote)
+        if (!playerIn.isCrouching() && handIn.equals(Hand.MAIN_HAND))
         {
-            if (!playerIn.isCrouching() && handIn.equals(Hand.MAIN_HAND))
+            if (getMarkCoolDown(playerIn.getHeldItem(handIn)) <= 0)
             {
-                if (getMarkCoolDown(playerIn.getHeldItem(handIn)) <= 0)
+                if (!worldIn.isRemote)
                 {
                     setMarkCoolDown(playerIn.getHeldItem(handIn), 200);
                     for (LivingEntity entity : EntityHelper.getEntityLivingBaseNearby(playerIn, 5, 2, 5, 10))
@@ -102,9 +102,15 @@ public class DeathSwordItem extends SwordItem
                         entity.addPotionEffect(new EffectInstance(Effects.GLOWING, 180, 1));
                     }
                     playerIn.playSound(SoundEvents.ENTITY_SQUID_SQUIRT, SoundCategory.BLOCKS, 5.0F, 0.1F);
-                } else
+                }
+            } else
+            {
+                if (!worldIn.isRemote)
                 {
                     playerIn.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                } else
+                {
+                    EntityHelper.sendCoolDownMessage(playerIn, getMarkCoolDown(playerIn.getHeldItem(handIn)));
                 }
             }
         }
@@ -115,19 +121,26 @@ public class DeathSwordItem extends SwordItem
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity playerIn, LivingEntity target, Hand hand)
     {
-        if (!playerIn.world.isRemote)
+
+        if (playerIn.isCrouching() && hand.equals(Hand.MAIN_HAND))
         {
-            if (playerIn.isCrouching() && hand.equals(Hand.MAIN_HAND))
+            if (getVoodooCoolDown(playerIn.getHeldItem(hand)) <= 0)
             {
-                if (getVoodooCoolDown(playerIn.getHeldItem(hand)) <= 0)
+                if (!playerIn.world.isRemote)
                 {
                     setVoodooCoolDown(playerIn.getHeldItem(hand), 200);
                     setVoodooID(playerIn.getHeldItem(hand), target.getEntityId());
                     playerIn.playSound(SoundEvents.ENTITY_ILLUSIONER_PREPARE_BLINDNESS, SoundCategory.BLOCKS, 5.0F, 0.1F);
                     return true;
-                } else
+                }
+            } else
+            {
+                if (!playerIn.world.isRemote)
                 {
                     playerIn.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                } else
+                {
+                    EntityHelper.sendCoolDownMessage(playerIn, getVoodooCoolDown(playerIn.getHeldItem(hand)));
                 }
             }
         }

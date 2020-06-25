@@ -1,16 +1,26 @@
 package com.hoopawolf.dmm.util;
 
+import com.hoopawolf.dmm.entities.ai.DazedGoal;
 import com.hoopawolf.dmm.entities.projectiles.PesArrowEntity;
 import com.hoopawolf.dmm.items.weapons.DeathSwordItem;
 import com.hoopawolf.dmm.network.VRMPacketHandler;
 import com.hoopawolf.dmm.network.packets.client.SpawnParticleMessage;
 import com.hoopawolf.dmm.ref.Reference;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
@@ -37,6 +47,7 @@ public class VRMEventHandler
                     event.setCanceled(true);
                     attacker.attackEntityFrom(new DamageSource("death"), attacker.getMaxHealth() * 0.5F);
                     player.setHealth(player.getMaxHealth() * 0.5F);
+                    player.getFoodStats().setFoodLevel(20);
                     DeathSwordItem.setDeathCoolDown(player.getHeldItemMainhand(), 600);
                     player.playSound(SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 5.0F, 0.1F);
 
@@ -80,6 +91,14 @@ public class VRMEventHandler
     {
         if (!event.getEntity().world.isRemote)
         {
+            if (event.getEntity() instanceof CreatureEntity)
+            {
+                if (((CreatureEntity) event.getEntity()).isPotionActive(PotionRegistryHandler.DAZED_EFFECT.get()))
+                {
+                    ((CreatureEntity) event.getEntity()).removePotionEffect(PotionRegistryHandler.DAZED_EFFECT.get());
+                }
+            }
+
             if (event.getEntity() instanceof PlayerEntity)
             {
                 PlayerEntity player = (PlayerEntity) event.getEntity();
@@ -92,6 +111,18 @@ public class VRMEventHandler
                     event.setCanceled(true);
                     player.world.getEntityByID(DeathSwordItem.getVoodooID(player.getHeldItemMainhand())).attackEntityFrom(new DamageSource("reaper"), event.getAmount());
                     player.playSound(SoundEvents.ENTITY_VEX_CHARGE, SoundCategory.BLOCKS, 5.0F, 0.1F);
+                }
+
+                if (player.world.rand.nextInt(100) < 40 && (player.getHeldItemMainhand().getItem().equals(ItemBlockRegistryHandler.FAM_SCALE.get()) || player.getHeldItemOffhand().getItem().equals(ItemBlockRegistryHandler.FAM_SCALE.get())))
+                {
+                    if (event.getSource().getTrueSource() instanceof CreatureEntity)
+                    {
+                        ((CreatureEntity) event.getSource().getTrueSource()).addPotionEffect(new EffectInstance(new EffectInstance(PotionRegistryHandler.DAZED_EFFECT.get(), 100)));
+                        SpawnParticleMessage spawnParticleMessage = new SpawnParticleMessage(new Vec3d(event.getSource().getTrueSource().getPosX(), event.getSource().getTrueSource().getPosY() + 0.5F, event.getSource().getTrueSource().getPosZ()), new Vec3d(0.0F, 0.0D, 0.0F), 3, 9, event.getSource().getTrueSource().getWidth());
+                        VRMPacketHandler.packetHandler.sendToDimension(event.getSource().getTrueSource().dimension, spawnParticleMessage);
+                    }
+
+                    player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BANJO, SoundCategory.BLOCKS, 5.0F, 0.1F);
                 }
 
                 if (player.getHealth() < player.getMaxHealth() * 0.3F && player.getHeldItemMainhand().getItem().equals(ItemBlockRegistryHandler.WAR_SWORD.get()) &&
@@ -122,6 +153,30 @@ public class VRMEventHandler
                 }
             }
         }
+    }
 
+    @SubscribeEvent
+    public static void onJoinWorld(EntityJoinWorldEvent event)
+    {
+        Entity entity = event.getEntity();
+
+        World world = entity.world;
+
+        if (!world.isRemote)
+        {
+            if (entity instanceof CreatureEntity)
+            {
+                ((CreatureEntity) entity).goalSelector.addGoal(0, new DazedGoal(((CreatureEntity) entity)));
+            }
+
+            if (entity instanceof CowEntity || entity instanceof RabbitEntity || entity instanceof SheepEntity || entity instanceof AbstractHorseEntity || entity instanceof PigEntity || entity instanceof ChickenEntity)
+            {
+                ((AnimalEntity) entity).getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
+                ((AnimalEntity) entity).getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(2.0D);
+                ((AnimalEntity) entity).getAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK).setBaseValue(1.0D);
+
+                ((AnimalEntity) entity).goalSelector.addGoal(1, new MeleeAttackGoal(((AnimalEntity) entity), 1.0D, true));
+            }
+        }
     }
 }

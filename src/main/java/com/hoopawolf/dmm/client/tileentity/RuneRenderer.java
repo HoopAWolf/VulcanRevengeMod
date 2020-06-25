@@ -14,9 +14,12 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 
+@OnlyIn(Dist.CLIENT)
 public class RuneRenderer<T extends RuneTileEntity> extends TileEntityRenderer<T>
 {
     private static final float field_229057_l_ = (float) (Math.sqrt(3.0D) / 2.0D);
@@ -58,7 +61,7 @@ public class RuneRenderer<T extends RuneTileEntity> extends TileEntityRenderer<T
             float currentTime = tileEntityIn.getWorld().getGameTime() + partialTicks;
             matrixStackIn.translate(0D, Math.sin(Math.PI * (currentTime * 0.0125F)) * 0.2F, 0D);
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(tileEntityIn.getDegree()));
-            renderItem(tileEntityIn.getActivationItem(), partialTicks, matrixStackIn, bufferIn, combinedLightIn);
+            renderItem(tileEntityIn.getActivationItem().getDefaultInstance(), partialTicks, matrixStackIn, bufferIn, combinedLightIn);
 
             float f5 = 1.05F;
             float f7 = 0.0F;

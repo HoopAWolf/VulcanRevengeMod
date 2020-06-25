@@ -4,6 +4,7 @@ import com.hoopawolf.dmm.blocks.tileentity.RuneTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -76,7 +77,7 @@ public abstract class RuneBlock extends Block
 
             if (!worldIn.isRemote)
             {
-                player.dropItem(rune.getActivationItem(), true);
+                player.dropItem(new ItemStack(rune.getActivationItem()), true);
             }
         }
     }

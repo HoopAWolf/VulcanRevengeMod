@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -58,7 +59,7 @@ public class SwordStoneBlock extends Block
         {
             SwordStoneTileEntity swordStone = (SwordStoneTileEntity) worldIn.getTileEntity(pos);
 
-            player.dropItem(swordStone.getActivationItem(), true);
+            player.dropItem(new ItemStack(swordStone.getActivationItem()), true);
             worldIn.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }

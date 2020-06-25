@@ -1,10 +1,14 @@
 package com.hoopawolf.dmm.helper;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -15,6 +19,21 @@ public class EntityHelper
     public static double getAngleBetweenEntities(Entity first, Entity second)
     {
         return Math.atan2(second.getPosZ() - first.getPosZ(), second.getPosX() - first.getPosX()) * (180 / Math.PI) + 90;
+    }
+
+    public static void sendCoolDownMessage(LivingEntity entityIn, int cooldownIn)
+    {
+        String message = "";
+
+        if (cooldownIn > 0)
+        {
+            message = "message.vrm.cooldown";
+        } else
+        {
+            message = "message.vrm.error";
+        }
+
+        entityIn.sendMessage(new TranslationTextComponent(I18n.format(message) + ((cooldownIn > 0) ? " " + (cooldownIn / 20) + "s" : "")).setStyle(new Style().setColor(TextFormatting.RED)));
     }
 
     public static List<PlayerEntity> getPlayersNearby(Entity ent, double distanceX, double distanceY, double distanceZ, double radius)

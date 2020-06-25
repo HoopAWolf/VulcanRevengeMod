@@ -1,7 +1,7 @@
 package com.hoopawolf.dmm.blocks.tileentity;
 
 import com.hoopawolf.dmm.util.TileEntityRegistryHandler;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.Vec3i;
@@ -19,9 +19,9 @@ public class NetherRuneTileEntity extends RuneTileEntity
     }
 
     @Override
-    public ItemStack getActivationItem()
+    public Item getActivationItem()
     {
-        return Items.NETHER_BRICK.getDefaultInstance();
+        return Items.NETHER_BRICK;
     }
 
     @Override

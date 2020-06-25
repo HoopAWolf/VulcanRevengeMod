@@ -88,7 +88,7 @@ public class RuneItem extends Item
                     {
                         playerIn.getHeldItemOffhand().shrink(1);
                         playerIn.getHeldItem(handIn).shrink(1);
-                        playerIn.dropItem(ItemBlockRegistryHandler.DEATH_SWORD.get().getDefaultInstance(), true);
+                        playerIn.dropItem(new ItemStack(ItemBlockRegistryHandler.DEATH_SWORD.get()), true);
                         playerIn.playSound(SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 5.0F, 0.1F);
 
                         for (int i = 1; i <= 180; ++i)
@@ -111,7 +111,7 @@ public class RuneItem extends Item
                     {
                         playerIn.getHeldItemOffhand().shrink(1);
                         playerIn.getHeldItem(handIn).shrink(1);
-                        playerIn.dropItem(ItemBlockRegistryHandler.WAR_SWORD.get().getDefaultInstance(), true);
+                        playerIn.dropItem(new ItemStack(ItemBlockRegistryHandler.WAR_SWORD.get()), true);
                         playerIn.playSound(SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 5.0F, 0.1F);
 
                         for (int i = 1; i <= 180; ++i)
@@ -133,7 +133,7 @@ public class RuneItem extends Item
                     {
                         playerIn.getHeldItemOffhand().shrink(1);
                         playerIn.getHeldItem(handIn).shrink(1);
-                        playerIn.dropItem(ItemBlockRegistryHandler.FAM_SCALE.get().getDefaultInstance(), true);
+                        playerIn.dropItem(new ItemStack(ItemBlockRegistryHandler.FAM_SCALE.get()), true);
                         playerIn.playSound(SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 5.0F, 0.1F);
 
                         for (int i = 1; i <= 180; ++i)
@@ -155,7 +155,7 @@ public class RuneItem extends Item
                     {
                         playerIn.getHeldItemOffhand().shrink(1);
                         playerIn.getHeldItem(handIn).shrink(1);
-                        playerIn.dropItem(ItemBlockRegistryHandler.PES_BOW.get().getDefaultInstance(), true);
+                        playerIn.dropItem(new ItemStack(ItemBlockRegistryHandler.PES_BOW.get()), true);
                         playerIn.playSound(SoundEvents.BLOCK_END_PORTAL_SPAWN, SoundCategory.BLOCKS, 5.0F, 0.1F);
 
                         for (int i = 1; i <= 180; ++i)

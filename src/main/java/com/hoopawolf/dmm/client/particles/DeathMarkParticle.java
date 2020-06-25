@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class DeathMarkParticle extends SpriteTexturedParticle
 {
     private DeathMarkParticle(World p_i51030_1_, double p_i51030_2_, double p_i51030_4_, double p_i51030_6_)

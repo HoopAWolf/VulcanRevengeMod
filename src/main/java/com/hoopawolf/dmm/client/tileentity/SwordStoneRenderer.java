@@ -14,9 +14,12 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 
+@OnlyIn(Dist.CLIENT)
 public class SwordStoneRenderer extends TileEntityRenderer<SwordStoneTileEntity>
 {
     private static final float field_229057_l_ = (float) (Math.sqrt(3.0D) / 2.0D);
@@ -63,7 +66,7 @@ public class SwordStoneRenderer extends TileEntityRenderer<SwordStoneTileEntity>
         matrixStackIn.translate(0D, (tileEntityIn.getTimer() * 0.0125F) * 0.2F, 0D);
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(tileEntityIn.getDegree()));
         matrixStackIn.rotate(Vector3f.ZN.rotationDegrees(-135));
-        renderItem(tileEntityIn.getActivationItem(), partialTicks, matrixStackIn, bufferIn, combinedLightIn);
+        renderItem(tileEntityIn.getActivationItem().getDefaultInstance(), partialTicks, matrixStackIn, bufferIn, combinedLightIn);
 
         if (tileEntityIn.getDegree() <= 0 && tileEntityIn.isActivated())
         {

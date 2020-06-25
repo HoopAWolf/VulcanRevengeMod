@@ -7,7 +7,7 @@ import com.hoopawolf.dmm.util.TileEntityRegistryHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -284,8 +284,8 @@ public class SwordStoneTileEntity extends TileEntity implements ITickableTileEnt
         setActivated(false);
     }
 
-    public ItemStack getActivationItem()
+    public Item getActivationItem()
     {
-        return isDone() ? ItemBlockRegistryHandler.VULCAN_SWORD.get().getDefaultInstance() : Items.STONE_SWORD.getDefaultInstance();
+        return isDone() ? ItemBlockRegistryHandler.VULCAN_SWORD.get() : Items.STONE_SWORD;
     }
 }
