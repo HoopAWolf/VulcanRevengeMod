@@ -7,7 +7,12 @@ import com.hoopawolf.dmm.util.TileEntityRegistryHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.WitherSkeletonEntity;
+import net.minecraft.entity.monster.ZombiePigmanEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -45,7 +50,7 @@ public class SwordStoneTileEntity extends TileEntity implements ITickableTileEnt
             {
                     EntityType.WITCH,
                     EntityType.VEX,
-                    EntityType.PHANTOM
+                    EntityType.SILVERFISH
             };
 
     private static final EntityType[] slowPhase =
@@ -59,7 +64,7 @@ public class SwordStoneTileEntity extends TileEntity implements ITickableTileEnt
             {
                     EntityType.WITHER_SKELETON,
                     EntityType.CAVE_SPIDER,
-                    EntityType.ILLUSIONER,
+                    EntityType.VINDICATOR,
                     EntityType.EVOKER
             };
 
@@ -179,6 +184,15 @@ public class SwordStoneTileEntity extends TileEntity implements ITickableTileEnt
                                         this.getPos().getY() + 1.0D,
                                         this.getPos().getZ() + (world.rand.nextInt(5) - world.rand.nextInt(5)), 0.0F, 0.0F);
                                 entity.setAttackTarget(world.getPlayerByUuid(player));
+
+                                if (entity instanceof SkeletonEntity)
+                                {
+                                    entity.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(Items.BOW));
+                                } else if (entity instanceof ZombiePigmanEntity || entity instanceof WitherSkeletonEntity)
+                                {
+                                    entity.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(Items.STONE_SWORD));
+                                }
+
                                 world.addEntity(entity);
                             }
                         }
