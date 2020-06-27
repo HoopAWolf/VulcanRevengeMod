@@ -114,6 +114,7 @@ public class WarSwordItem extends SwordItem
                                 } else
                                 {
                                     ((CreatureEntity) entity).setAttackTarget(temp);
+                                    temp.setAttackTarget(entity);
                                     SpawnParticleMessage mob1 = new SpawnParticleMessage(new Vec3d(entity.getPosX(), entity.getPosY() + 0.5F, entity.getPosZ()), new Vec3d(0.0D, 0.0D, 0.0D), 3, 8, temp.getWidth());
                                     VRMPacketHandler.packetHandler.sendToDimension(playerIn.dimension, mob1);
                                     SpawnParticleMessage mob2 = new SpawnParticleMessage(new Vec3d(temp.getPosX(), temp.getPosY() + 0.5F, temp.getPosZ()), new Vec3d(0.0D, 0.0D, 0.0D), 3, 0, temp.getWidth());
