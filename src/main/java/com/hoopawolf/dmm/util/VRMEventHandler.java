@@ -171,7 +171,16 @@ public class VRMEventHandler
 
             if (entity instanceof CowEntity || entity instanceof RabbitEntity || entity instanceof SheepEntity || entity instanceof AbstractHorseEntity || entity instanceof PigEntity || entity instanceof ChickenEntity)
             {
-                ((AnimalEntity) entity).getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
+                if(((AnimalEntity) entity).getAttributes().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE) == null)
+                {
+                    ((AnimalEntity) entity).getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
+                }
+
+                if(((AnimalEntity) entity).getAttributes().getAttributeInstance(SharedMonsterAttributes.ATTACK_KNOCKBACK) == null)
+                {
+                    ((AnimalEntity) entity).getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK);
+                }
+
                 ((AnimalEntity) entity).getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(2.0D);
                 ((AnimalEntity) entity).getAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK).setBaseValue(1.0D);
 
