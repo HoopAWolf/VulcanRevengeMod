@@ -1,5 +1,6 @@
 package com.hoopawolf.dmm.util;
 
+import com.hoopawolf.dmm.entities.ai.AnimalAttackGoal;
 import com.hoopawolf.dmm.entities.ai.DazedGoal;
 import com.hoopawolf.dmm.entities.projectiles.PesArrowEntity;
 import com.hoopawolf.dmm.items.weapons.DeathSwordItem;
@@ -169,22 +170,9 @@ public class VRMEventHandler
                 ((CreatureEntity) entity).goalSelector.addGoal(0, new DazedGoal(((CreatureEntity) entity)));
             }
 
-            if (entity instanceof CowEntity || entity instanceof RabbitEntity || entity instanceof SheepEntity || entity instanceof AbstractHorseEntity || entity instanceof PigEntity || entity instanceof ChickenEntity)
+            if (entity instanceof AnimalEntity)
             {
-                if(((AnimalEntity) entity).getAttributes().getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE) == null)
-                {
-                    ((AnimalEntity) entity).getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-                }
-
-                if(((AnimalEntity) entity).getAttributes().getAttributeInstance(SharedMonsterAttributes.ATTACK_KNOCKBACK) == null)
-                {
-                    ((AnimalEntity) entity).getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK);
-                }
-
-                ((AnimalEntity) entity).getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(2.0D);
-                ((AnimalEntity) entity).getAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK).setBaseValue(1.0D);
-
-                ((AnimalEntity) entity).goalSelector.addGoal(1, new MeleeAttackGoal(((AnimalEntity) entity), 1.0D, true));
+                ((AnimalEntity) entity).goalSelector.addGoal(1, new AnimalAttackGoal(((AnimalEntity) entity), 1.0D, true, 2, 1));
             }
         }
     }
